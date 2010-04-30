@@ -19,7 +19,7 @@ using System.Text;
 namespace Microsoft.WindowsMobile.Samples.Location
 {
     public delegate void LocationChangedEventHandler(object sender, LocationChangedEventArgs args);
-    public delegate void DeviceStateChangedEventHandler(object sender, DeviceStateChangedEventArgs args);
+//    public delegate void DeviceStateChangedEventHandler(object sender, DeviceStateChangedEventArgs args);
 
     /// <summary>
     /// Summary description for GPS.
@@ -66,25 +66,25 @@ namespace Microsoft.WindowsMobile.Samples.Location
         }
 
 
-        event DeviceStateChangedEventHandler deviceStateChanged;
+        //event DeviceStateChangedEventHandler deviceStateChanged;
 
         /// <summary>
         /// Event that is raised when the GPS device state changes
         /// </summary>
-        public event DeviceStateChangedEventHandler DeviceStateChanged
-        {
-            add
-            {
-                deviceStateChanged += value;
+        //public event DeviceStateChangedEventHandler DeviceStateChanged
+        //{
+        //    add
+        //    {
+        //        deviceStateChanged += value;
 
-                // create our event thread only if the user decides to listen
-                CreateGpsEventThread();
-            }
-            remove
-            {
-                deviceStateChanged -= value;
-            }
-        }
+        //        // create our event thread only if the user decides to listen
+        //        CreateGpsEventThread();
+        //    }
+        //    remove
+        //    {
+        //        deviceStateChanged -= value;
+        //    }
+        //}
 
         /// <summary>
         /// True: The GPS device has been opened. False: It has not been opened
@@ -113,14 +113,15 @@ namespace Microsoft.WindowsMobile.Samples.Location
             {
                 // create handles for GPS events
                 newLocationHandle = CreateEvent(IntPtr.Zero, 0, 0, null);
-                deviceStateChangedHandle = CreateEvent(IntPtr.Zero, 0, 0, null);
+//                deviceStateChangedHandle = CreateEvent(IntPtr.Zero, 0, 0, null);
                 stopHandle = CreateEvent(IntPtr.Zero, 0, 0, null);
 
                 gpsHandle = GPSOpenDevice(newLocationHandle, deviceStateChangedHandle, null, 0);
 
                 // if events were hooked up before the device was opened, we'll need
                 // to create the gps event thread.
-                if (locationChanged != null || deviceStateChanged != null)
+                if( locationChanged != null)
+//                if( locationChanged != null || deviceStateChanged != null )
                 {
                     CreateGpsEventThread();
                 }
@@ -231,32 +232,32 @@ namespace Microsoft.WindowsMobile.Samples.Location
         /// Queries the device state.
         /// </summary>
         /// <returns>Device state information</returns>
-        public GpsDeviceState GetDeviceState()
-        {
-            GpsDeviceState device = null;
+        //public GpsDeviceState GetDeviceState()
+        //{
+        //    GpsDeviceState device = null;
 
-            // allocate a buffer on the native side.  Since the
-            IntPtr pGpsDevice = Utils.LocalAlloc(GpsDeviceState.GpsDeviceStructureSize);
+        //    // allocate a buffer on the native side.  Since the
+        //    IntPtr pGpsDevice = Utils.LocalAlloc(GpsDeviceState.GpsDeviceStructureSize);
             
-            // GPS_DEVICE structure has arrays of characters, it's easier to just
-            // write directly into memory rather than create a managed structure with
-            // the same layout.
-            Marshal.WriteInt32(pGpsDevice, 1);	// write out GPS version of 1
-            Marshal.WriteInt32(pGpsDevice, 4, GpsDeviceState.GpsDeviceStructureSize);	// write out dwSize of structure
+        //    // GPS_DEVICE structure has arrays of characters, it's easier to just
+        //    // write directly into memory rather than create a managed structure with
+        //    // the same layout.
+        //    Marshal.WriteInt32(pGpsDevice, 1);	// write out GPS version of 1
+        //    Marshal.WriteInt32(pGpsDevice, 4, GpsDeviceState.GpsDeviceStructureSize);	// write out dwSize of structure
 
-            int result = GPSGetDeviceState(pGpsDevice);
+        //    int result = GPSGetDeviceState(pGpsDevice);
 
-            if (result == 0)
-            {
-                // instantiate the GpsDeviceState class passing in the native pointer
-                device = new GpsDeviceState(pGpsDevice);
-            }
+        //    if (result == 0)
+        //    {
+        //        // instantiate the GpsDeviceState class passing in the native pointer
+        //        device = new GpsDeviceState(pGpsDevice);
+        //    }
 
-            // free our native memory
-            Utils.LocalFree(pGpsDevice);
+        //    // free our native memory
+        //    Utils.LocalFree(pGpsDevice);
 
-            return device;
-        }
+        //    return device;
+        //}
 
         /// <summary>
         /// Creates our event thread that will receive native events
@@ -300,13 +301,13 @@ namespace Microsoft.WindowsMobile.Samples.Location
                                 // we've been signalled to stop
                                 listening = false;
                                 break;
-                            case 1:
-                                // device state has changed
-                                if (deviceStateChanged != null)
-                                {
-                                    deviceStateChanged(this, new DeviceStateChangedEventArgs(GetDeviceState()));
-                                }
-                                break;
+                            //case 1:
+                            //    // device state has changed
+                            //    if (deviceStateChanged != null)
+                            //    {
+                            //        deviceStateChanged(this, new DeviceStateChangedEventArgs(GetDeviceState()));
+                            //    }
+                            //    break;
                             case 2:
                                 // location has changed
                                 if (locationChanged != null)

@@ -35,10 +35,10 @@ namespace PhoneGap
             // webBrowser
             // 
             this.webBrowser.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.webBrowser.Location = new System.Drawing.Point(0, 0);
+            this.webBrowser.Location = new System.Drawing.Point( 0, 0 );
             this.webBrowser.Name = "webBrowser";
-            this.webBrowser.Size = new System.Drawing.Size(176, 200);
-            this.webBrowser.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.webBrowser_Navigating);
+            this.webBrowser.Size = new System.Drawing.Size( 176, 200 );
+            this.webBrowser.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler( this.webBrowser_Navigating );
             // 
             // openFileDialog1
             // 
@@ -46,20 +46,21 @@ namespace PhoneGap
             // 
             // WebForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF( 96F, 96F );
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(176, 200);
-            this.Controls.Add(this.webBrowser);
-            this.Name = "WebForm";
-            this.Text = "WebForm";
-            this.ResumeLayout(false);
+            this.ClientSize = new System.Drawing.Size( 176, 200 );
+            this.Controls.Add( this.webBrowser );
+            this.MinimizeBox = false;
+            this.Name = "PhoneGap";
+            this.Text = "PhoneGap";
+            this.ResumeLayout( false );
+            this.Closing += new System.ComponentModel.CancelEventHandler( WebForm_Closing );
 
         }
 
         #endregion
 
-        private System.Windows.Forms.WebBrowser webBrowser;
         private CommandManager commandManager;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
     }

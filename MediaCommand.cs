@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.Text;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -9,12 +6,12 @@ using System.Runtime.InteropServices;
 namespace PhoneGap
 {
     // Need to invoke unmanaged mobile native code from .NET to play sounds. Woot!
-    internal partial class PInvoke
+    internal class Sound
     {
-        private static IntPtr hSound = IntPtr.Zero; // Pointer/handle of currently-playing sound.
-        const int SND_SCOPE_PROCESS = 0x1;
-        private enum Flags
-        {
+        private byte[] m_soundBytes;
+        private string m_fileName;
+
+        private enum Flags {
             SND_SYNC = 0x0000,  /* play synchronously (default) */
             SND_ASYNC = 0x0001,  /* play asynchronously */
             SND_NODEFAULT = 0x0002,  /* silence (!default) if sound not found */
@@ -28,35 +25,41 @@ namespace PhoneGap
             SND_RESOURCE = 0x00040004  /* name is resource name or atom */
         }
 
+        [DllImport("CoreDll.DLL", EntryPoint="PlaySound", SetLastError=true)]
+        private extern static int WCE_PlaySound(string szSound, IntPtr hMod, int flags);
 
-        [DllImport("aygshell.dll")]
-        static extern uint SndOpen(string pszSoundFile, ref IntPtr phSound);
+        [DllImport("CoreDll.DLL", EntryPoint="PlaySound", SetLastError=true)]
+        private extern static int WCE_PlaySoundBytes (byte[] szSound, IntPtr hMod, int flags);
 
-        [DllImport("aygshell.dll")]
-        static extern uint SndPlayAsync(IntPtr hSound, uint dwFlags);
-
-        [DllImport("aygshell.dll")]
-        static extern uint SndClose(IntPtr hSound);
-
-        [DllImport("aygshell.dll")]
-        static extern uint SndStop(int SoundScope, IntPtr hSound);
-        public static bool PlaySound(string path)
-        {
-            if (File.Exists(path))
-            {
-                SndOpen(path, ref hSound);
-                SndPlayAsync(hSound, 0);
-                return true;
-            }
-            else return false;
+        /// <summary>
+        /// Construct the Sound object to play sound data from the specified file.
+        /// </summary>
+        public Sound (string fileName) {
+            m_fileName = fileName;
         }
-        public static void StopSound()
-        {
-            SndClose(hSound);
-            SndStop(SND_SCOPE_PROCESS, hSound);
-            hSound = IntPtr.Zero;
+
+        /// <summary>
+        /// Construct the Sound object to play sound data from the specified stream.
+        /// </summary>
+        public Sound(Stream stream)    {
+            // read the data from the stream
+            m_soundBytes = new byte [stream.Length];
+            stream.Read(m_soundBytes, 0,(int)stream.Length);
+        }
+
+        /// <summary>
+        /// Play the sound
+        /// </summary>
+        public void Play () {
+            // if a file name has been registered, call WCE_PlaySound,
+            //  otherwise call WCE_PlaySoundBytes
+            if (m_fileName != null)
+                WCE_PlaySound(m_fileName, IntPtr.Zero, (int) (Flags.SND_ASYNC | Flags.SND_FILENAME));
+            else
+                WCE_PlaySoundBytes (m_soundBytes, IntPtr.Zero, (int) (Flags.SND_ASYNC | Flags.SND_MEMORY));
         }
     }
+
     class MediaCommand : Command
     {
         private string soundFileName = "";
@@ -83,9 +86,18 @@ namespace PhoneGap
         String Command.execute(String instruction)
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
-            string path = "\\Program Files\\" + assembly.GetName().Name + "\\" + soundFileName.Substring(1).Replace("/","\\");
-            if (PInvoke.PlaySound(path)) return "";
-            else return ";alert(\"[PhoneGap Error] Could not find sound file with path '" + path + "'.\");";
+            string path = assembly.GetName().Name + "." + soundFileName.Substring( 1 ).Replace( "/", "." );
+            try
+            {
+                Stream s = assembly.GetManifestResourceStream( path );
+                Sound sound = new Sound( s );
+                sound.Play();
+                return "";
+            }
+            catch
+            {
+                return ";alert(\"[PhoneGap Error] Could not find sound file with path '" + path + "'.\");";
+            }
         }
     }
 }
