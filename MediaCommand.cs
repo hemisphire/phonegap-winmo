@@ -81,8 +81,9 @@ namespace PhoneGap
                         break;
                 }
             }
-            return retVal;            
+            return retVal;
         }
+
         String Command.execute(String instruction)
         {
             Assembly assembly = Assembly.GetExecutingAssembly();

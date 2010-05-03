@@ -10,6 +10,7 @@
     <script src="js/camera.js" type="text/javascript" charset="utf-8"></script>	  
     <script src="js/contacts.js" type="text/javascript" charset="utf-8"></script>	  
     <script src="js/device.js" type="text/javascript" charset="utf-8"></script>	  
+    <script src="js/file.js" type="text/javascript" charset="utf-8"></script>	  
     <script src="js/geolocation.js" type="text/javascript" charset="utf-8"></script>	  
     <script src="js/media.js" type="text/javascript" charset="utf-8"></script>	  
     <script src="js/notification.js" type="text/javascript" charset="utf-8"></script>	  
@@ -75,9 +76,33 @@
   	var showContacts = function(){
       for( var i = 0; i < navigator.contacts.records.length; i++ )
       {
-        alert("contact: " + navigator.contacts.records[i].name + " " + navigator.contacts.records[i].email + " " + navigator.contacts.records[i].phone);
+        alert("Contact: " + navigator.contacts.records[i].name + " " + navigator.contacts.records[i].email + " " + navigator.contacts.records[i].phone);
       }
 	}
+
+  	var readFile = function(){
+      var fileReader = new FileReader();
+      fileReader.onload = function (data) {
+        fileRead(data);
+      };
+      fileReader.readAsText("test.txt");
+    }
+
+  	var fileRead = function(data){
+      alert("File read: " + data);
+    }
+
+  	var writeFile = function(){
+      var fileWriter = new FileWriter();
+      fileWriter.oncomplete = function (data) {
+        fileWrote(data);
+      };
+      fileWriter.writeAsText("newTest.txt", "write this", false);
+    }
+
+  	var fileWrote = function(data){
+      alert("File wrote: " + data + " bytes");
+    }
 
     </script>
   </head>
@@ -103,5 +128,7 @@
     <a href="#" class="btn large" onclick="javascript:vibrate();">Vibrate</a>
     <a href="#" class="btn large" onclick="javascript:showPic();">Get a Picture</a>
     <a href="#" class="btn large" onclick="javascript:getContacts();">Get phone's contacts</a>
+    <a href="#" class="btn large" onclick="javascript:readFile();">Read text from file</a>
+    <a href="#" class="btn large" onclick="javascript:writeFile();">Write text to file</a>
   </body>
 </html>

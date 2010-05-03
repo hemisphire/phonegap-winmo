@@ -18,6 +18,7 @@
     <FormFactorID>
     </FormFactorID>
     <SignAssembly>false</SignAssembly>
+    <ApplicationIcon>phonegap.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -78,6 +79,7 @@
     <Compile Include="Command.cs" />
     <Compile Include="CommandManager.cs" />
     <Compile Include="ContactCommand.cs" />
+    <Compile Include="FileCommand.cs" />
     <Compile Include="Device\DeviceID.cs" />
     <Compile Include="Device\OSInfo.cs" />
     <Compile Include="GeolocationCommand.cs" />
@@ -142,6 +144,12 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="www\js\phonegap.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="www\js\file.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="phonegap.ico" />
   </ItemGroup>
   <Import Condition="'$(TargetFrameworkVersion)' == 'v1.0'" Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.v1.targets" />
   <Import Condition="'$(TargetFrameworkVersion)' == 'v2.0'" Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.targets" />
